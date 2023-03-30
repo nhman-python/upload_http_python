@@ -7,7 +7,7 @@ template = """
 <!doctype html>
 <html>
 <head>
-    <a href="https://github.com/nhman-python/">my github path nhman-python/a>
+    <a href="https://github.com/nhman-python/">my github path nhman-python</a>
     <title>Upload new File</title>
     <style>
         /* CSS reset */
