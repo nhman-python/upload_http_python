@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin</title>
+    <style>
+                body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .file-count {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dddddd;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        .delete-button {
+            background-color: #ff7675;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .toggle-button {
+            display: block;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .toggle-upload-button {
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .toggle-upload-button.on {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin</h1>
+        <div class="toggle-button{{ ' on' if allow_upload else '' }}">
+            <form action="/admin" method="POST" id="uploadForm">
+                <label for="allow_upload">Allow Upload:</label>
+                <input type="hidden" name="allow_upload" value="{{ 'on' if allow_upload else 'off' }}">
+                <button type="button" class="toggle-upload-button">{{ 'ON' if allow_upload else 'OFF' }}</button>
+            </form>
+        </div>
+        <div class="file-count">
+            <h2>Number of Files in Folder: {{ file_count }}</h2>
+        </div>
+        <ul>
+            {% for file in files %}
+                <li>
+                    {{ file }}
+                    <form action="/delete-file" method="POST" style="display: inline;">
+                        <input type="hidden" name="file_path" value="{{ file }}">
+                        <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this file?')">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="change-password-link">
+            <a href="/change-password">Change Admin Password</a>
+        </div>
+        <div class="logout-link">
+            <a href="/logout">Logout</a>
+        </div>
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+
+    <script>
+        const toggleButton = document.querySelector('.toggle-upload-button');
+        const uploadForm = document.getElementById('uploadForm');
+
+        toggleButton.addEventListener('click', () => {
+            const allowUploadInput = uploadForm.querySelector('input[name="allow_upload"]');
+            const currentState = allowUploadInput.value;
+            allowUploadInput.value = currentState === 'on' ? 'off' : 'on';
+            toggleButton.textContent = currentState === 'on' ? 'OFF' : 'ON';
+            toggleButton.classList.toggle('on');
+            uploadForm.submit();
+        });
+    </script>
+</body>
+</html>

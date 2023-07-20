@@ -1,1 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Upload Server</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
 
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .custom-file-upload,
+        .browse-button {
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #ffffff;
+            border-radius: 4px;
+        }
+
+        .submit-button {
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #27ae60;
+            color: #ffffff;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .submit-button,
+        .browse-button {
+            display: block;
+            margin: 0 auto;
+            width: fit-content;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-selected {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .error-popup {
+            background-color: #ff7675;
+            border: 1px solid #ff4d4d;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .info-message {
+            background-color: #d1e7ff;
+            border: 1px solid #99c2ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .drop-area {
+            border: 2px dashed #aaaaaa;
+            border-radius: 5px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+
+        }
+
+        .drop-area.highlight {
+            border-color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Upload Server</h1>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Choose a file:</label>
+                <div class="drop-area" id="dropArea">
+                    <span class="custom-file-upload">Drag and drop file here</span>
+                    <input type="file" id="file" name="file">
+                    <span class="file-selected"></span>
+                </div>
+                <div class="form-group">
+                    <label for="file" class="browse-button">Browse</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" class="submit-button">
+            </div>
+        </form>
+
+        <!-- Display error messages -->
+        {% if error %}
+            <div class="error-popup">
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+
+        <!-- Display info messages -->
+        {% if info %}
+            <div class="info-message">
+                <p>{{ info }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!--  JavaScript code -->
+    <script>
+                const dropArea = document.getElementById('dropArea');
+        const browseButton = document.querySelector('.browse-button');
+
+        dropArea.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('highlight');
+        });
+
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('highlight');
+        });
+
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('highlight');
+            const file = e.dataTransfer.files[0];
+            document.getElementById('file').files = e.dataTransfer.files;
+            document.querySelector('.file-selected').textContent = file.name;
+        });
+
+        browseButton.addEventListener('click', () => {
+            document.getElementById('file').click();
+        });
+
+        document.getElementById('file').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            document.querySelector('.file-selected').textContent = file.name;
+        });
+    </script>
+</body>
+</html>
